@@ -100,4 +100,6 @@ public class ConfigurationController {
         griffe.forEach(g -> griffNames.add(g.getGriffEnum().name()));
         return griffNames;
     }
+
+    
 }
