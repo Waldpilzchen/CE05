@@ -25,8 +25,9 @@ public class BikeConfigurationClient {
 
         ArrayList<String> configuration = new ArrayList<>();
         ArrayList<String> configOptions = new ArrayList<>();
+        int i=0;
 
-        for (int i=0; i<4 && !cancelConfig; i++) {
+        while (i<4 && !cancelConfig) {
 
             String configOption = getConfigOptions(client,i, configuration);
             configOptions = (ArrayList<String>) new ObjectMapper().readValue(configOption, List.class);
@@ -40,6 +41,7 @@ public class BikeConfigurationClient {
                 }
                 else {
                     configuration.add(configOptions.get(userInput-1));
+                    i++;
                 }
             }
             catch (IllegalArgumentException e) {
@@ -50,23 +52,12 @@ public class BikeConfigurationClient {
             }
         }
 
-        /*if (!cancelConfig) {
+        if (!cancelConfig) {
 
-            HttpRequest configurationSendRequest = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/configuration?" + requestBody))
-                    .build();
-            HttpResponse<String> requestResult = client.send(configurationSendRequest, HttpResponse.BodyHandlers.ofString());
-            System.out.println();
-            System.out.println(configurationResult.getConfiguration().toString());
-            if (configurationResult.getResult() == ConfigurationResult.SUCCESS){
-                System.out.println(configurationResult.toString());
-            }
-            else {
-                System.out.println(configurationResult.toString());
-                consoleCommunication(true);
-            }
+            String orderConfirmation = sendOrder(client, configuration);
+            System.out.println(orderConfirmation);
             System.out.println("\n");
-        }*/
+        }
     }
 
     private static int evaluateUserInput(String input, int maxSize) {
@@ -143,6 +134,7 @@ public class BikeConfigurationClient {
 
     public static void printOptions (List<String> options) {
         System.out.println("Please choose one of the following options: ");
+        System.out.println("0 Cancel");
         for (int i=0; i<options.size(); i++) {
             System.out.println(i+1 + " " + options.get(i).substring(0, 1).toUpperCase() + options.get(i).substring(1).toLowerCase());
         }
