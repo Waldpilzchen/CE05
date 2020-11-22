@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class BikeConfigurationClient {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -28,7 +29,7 @@ public class BikeConfigurationClient {
         for (int i=0; i<4 && !cancelConfig; i++) {
 
             String configOption = getConfigOptions(client,i, configuration);
-            configOptions = new ObjectMapper().readValue(configOption, List.class);
+            configOptions = (ArrayList<String>) new ObjectMapper().readValue(configOption, List.class);
             printOptions(configOptions);
 
             String line = scanner.nextLine();
@@ -88,7 +89,7 @@ public class BikeConfigurationClient {
             case 1: {
                 if (values.size() != 1) throw new IllegalArgumentException("Incorrect values size");
                 HttpRequest getMaterial = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/getAvailableHandlebarTypes/" + values.get(0)))
+                        .uri(URI.create("http://localhost:8080/getAvailableHandlebarMaterials/" + values.get(0)))
                         .timeout(Duration.ofSeconds(10))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.noBody())
@@ -143,7 +144,7 @@ public class BikeConfigurationClient {
     public static void printOptions (List<String> options) {
         System.out.println("Please choose one of the following options: ");
         for (int i=0; i<options.size(); i++) {
-            System.out.println(i+1 + " " + options.get(i));
+            System.out.println(i+1 + " " + options.get(i).substring(0, 1).toUpperCase() + options.get(i).substring(1).toLowerCase());
         }
     }
 }
