@@ -1,11 +1,9 @@
 package fahrradhersteller.Controller;
 
-import fahrradhersteller.Model.Entities.Dependency;
+import fahrradhersteller.Model.Entities.*;
 import fahrradhersteller.Model.Entities.Enums.LenkertypEnum;
 import fahrradhersteller.Model.Entities.Enums.MaterialEnum;
-import fahrradhersteller.Model.Entities.Lenkertyp;
-import fahrradhersteller.Model.Entities.Material;
-import fahrradhersteller.Model.Entities.Schaltung;
+import fahrradhersteller.Model.Entities.Enums.SchaltungEnum;
 import fahrradhersteller.Model.Repositories.*;
 import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,8 +74,30 @@ public class ConfigurationController {
         lenkertypDependencies.forEach(ld -> invalidSchaltungen.add(ld.getSchaltung()));
         materialDependencies.forEach(md -> invalidSchaltungen.add(md.getSchaltung()));
         schaltungen.removeAll(invalidSchaltungen);
-        List<String> schaltungenNames = new ArrayList<>();
-        schaltungen.forEach(s -> schaltungenNames.add(s.getSchaltungEnum().name()));
-        return schaltungenNames;
+        List<String> schaltungNames = new ArrayList<>();
+        schaltungen.forEach(s -> schaltungNames.add(s.getSchaltungEnum().name()));
+        return schaltungNames;
+    }
+
+    @PostMapping("/getAvailableHandleMaterials/{lenkertyp}/{material}/{schaltung}")
+    public List<String> getAvailableHandleMaterials(@PathVariable("lenkertyp") String lenkertypChoice,
+                                                    @PathVariable("material") String materialChoice,
+                                                    @PathVariable("schaltung") String schaltungChoice) {
+        List<Griff> griffe = new ArrayList<>();
+        griffRepository.findAll().forEach(griffe::add);
+        Lenkertyp l = lenkertypRepository.findLenkertypByLenkertypEnum(LenkertypEnum.valueOf(lenkertypChoice.toUpperCase()));
+        List<Dependency> lenkertypDependencies = dependencyRepository.findAllByLenkertyp(l);
+        Material m = materialRepository.findMaterialByMaterialEnum(MaterialEnum.valueOf(materialChoice.toUpperCase()));
+        List<Dependency> materialDependencies = dependencyRepository.findAllByMaterial(m);
+        Schaltung s = schaltungRepository.findSchaltungBySchaltungEnum(SchaltungEnum.valueOf(schaltungChoice.toUpperCase()));
+        List<Dependency> schaltungDependencies = dependencyRepository.findAllBySchaltung(s);
+        List<Griff> invalidGriffe = new ArrayList<>();
+        lenkertypDependencies.forEach(ld -> invalidGriffe.add(ld.getGriff()));
+        materialDependencies.forEach(md -> invalidGriffe.add(md.getGriff()));
+        schaltungDependencies.forEach(sd -> invalidGriffe.add(sd.getGriff()));
+        griffe.removeAll(invalidGriffe);
+        List<String> griffNames = new ArrayList<>();
+        griffe.forEach(g -> griffNames.add(g.getGriffEnum().name()));
+        return griffNames;
     }
 }
