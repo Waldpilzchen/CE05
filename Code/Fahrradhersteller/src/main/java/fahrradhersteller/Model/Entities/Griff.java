@@ -3,6 +3,7 @@ package fahrradhersteller.Model.Entities;
 import fahrradhersteller.Model.Entities.Enums.GriffEnum;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "GRIFF")
@@ -16,6 +17,9 @@ public class Griff {
     @Enumerated(EnumType.STRING)
     @Column(name = "handle_material")
     private GriffEnum griffEnum;
+
+    @OneToMany(mappedBy = "griff", cascade = CascadeType.ALL)
+    private List<Dependency> dependencies;
 
     public Griff() {
 

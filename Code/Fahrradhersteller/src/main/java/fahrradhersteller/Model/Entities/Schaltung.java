@@ -3,6 +3,7 @@ package fahrradhersteller.Model.Entities;
 import fahrradhersteller.Model.Entities.Enums.SchaltungEnum;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "SCHALTUNG")
@@ -16,6 +17,9 @@ public class Schaltung {
     @Enumerated(EnumType.STRING)
     @Column(name = "handlebar_gearshift")
     private SchaltungEnum schaltungEnum;
+
+    @OneToMany(mappedBy = "schaltung", cascade = CascadeType.ALL)
+    private List<Dependency> dependencies;
 
     public Schaltung() {
     }

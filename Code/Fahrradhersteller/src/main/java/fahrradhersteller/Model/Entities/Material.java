@@ -3,6 +3,7 @@ package fahrradhersteller.Model.Entities;
 import fahrradhersteller.Model.Entities.Enums.MaterialEnum;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "MATERIAL")
@@ -16,6 +17,9 @@ public class Material {
     @Enumerated(EnumType.STRING)
     @Column(name = "handlebar_material")
     private MaterialEnum materialEnum;
+
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
+    private List<Dependency> dependencies;
 
     public Material() {
     }

@@ -3,6 +3,7 @@ package fahrradhersteller.Model.Entities;
 import fahrradhersteller.Model.Entities.Enums.LenkertypEnum;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "LENKERTYP")
@@ -16,6 +17,9 @@ public class Lenkertyp {
     @Enumerated(EnumType.STRING)
     @Column(name = "handlebar_type")
     private LenkertypEnum lenkertypEnum;
+
+    @OneToMany(mappedBy = "lenkertyp", cascade = CascadeType.ALL)
+    private List<Dependency> dependencies;
 
     public Lenkertyp() {
 
