@@ -29,4 +29,5 @@ public class Order {
 
     @Column(name = "delivery_date")
     private Date deliveryDate;
+
 }
