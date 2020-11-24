@@ -1,7 +1,6 @@
 package fahrradhersteller.Client;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fahrradhersteller.Model.Entities.OrderDTO;
 
@@ -14,7 +13,7 @@ import java.time.Duration;
 
 public class LieferantClient {
 
-    public static OrderDTO getOfferFromSupplier1 (OrderDTO order) throws IOException, InterruptedException {
+    public static OrderDTO getOfferFromSuppliers(OrderDTO order) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest getHandleMaterials = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8081/getOrderOfferFromSupplierOne"))
@@ -27,10 +26,12 @@ public class LieferantClient {
                 HttpResponse.BodyHandlers.ofString()).body(), OrderDTO.class);
     }
 
+
+
     public static void main(String[] args) {
         try {
             OrderDTO myOrder = new OrderDTO();
-            myOrder = getOfferFromSupplier1(myOrder);
+            myOrder = getOfferFromSuppliers(myOrder);
             System.out.println(myOrder.getDeliveryDate() + " " + myOrder.getPrice());
         } catch (IOException e) {
             e.printStackTrace();

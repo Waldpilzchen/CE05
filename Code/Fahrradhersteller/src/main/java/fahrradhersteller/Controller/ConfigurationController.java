@@ -1,19 +1,18 @@
 package fahrradhersteller.Controller;
 
+import fahrradhersteller.Client.LieferantClient;
 import fahrradhersteller.Model.Entities.*;
+import fahrradhersteller.Model.Entities.Enums.GriffEnum;
 import fahrradhersteller.Model.Entities.Enums.LenkertypEnum;
 import fahrradhersteller.Model.Entities.Enums.MaterialEnum;
 import fahrradhersteller.Model.Entities.Enums.SchaltungEnum;
 import fahrradhersteller.Model.Repositories.*;
-import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,16 +24,18 @@ public class ConfigurationController {
     private SchaltungRepository schaltungRepository;
     private GriffRepository griffRepository;
     private DependencyRepository dependencyRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
     public ConfigurationController(LenkertypRepository lenkertypRepository, MaterialRepository materialRepository,
                                    SchaltungRepository schaltungRepository, GriffRepository griffRepository,
-                                   DependencyRepository dependencyRepository) {
+                                   DependencyRepository dependencyRepository, OrderRepository orderRepository) {
         this.lenkertypRepository = lenkertypRepository;
         this.materialRepository = materialRepository;
         this.schaltungRepository = schaltungRepository;
         this.griffRepository = griffRepository;
         this.dependencyRepository = dependencyRepository;
+        this.orderRepository = orderRepository;
     }
 
 
@@ -101,5 +102,35 @@ public class ConfigurationController {
         return griffNames;
     }
 
-    
+    @PostMapping("/getOrderConfirmation/{lenkertyp}/{material}/{schaltung}/{griff}")
+    public OrderDTO handleOrder(@PathVariable("lenkertyp") String lenkertypChoice,
+                             @PathVariable("material") String materialChoice,
+                             @PathVariable("schaltung") String schaltungChoice,
+                             @PathVariable("griff") String griffChoice) {
+        Order order = new Order();
+        Lenkertyp l = lenkertypRepository.findLenkertypByLenkertypEnum(LenkertypEnum.valueOf(lenkertypChoice.toUpperCase()));
+        Material m = materialRepository.findMaterialByMaterialEnum(MaterialEnum.valueOf(materialChoice.toUpperCase()));
+        Schaltung s = schaltungRepository.findSchaltungBySchaltungEnum(SchaltungEnum.valueOf(schaltungChoice.toUpperCase()));
+        Griff g = griffRepository.findGriffByGriffEnum(GriffEnum.valueOf(griffChoice.toUpperCase()));
+        order.setLenkertyp(l);
+        order.setMaterial(m);
+        order.setSchaltung(s);
+        order.setGriff(g);
+        OrderDTO orderClient = new OrderDTO();
+        orderClient.convertOrderToDTO(order);
+        OrderDTO orderSupplier1 = new OrderDTO();
+        OrderDTO orderSupplier2 = new OrderDTO();
+        try {
+            orderSupplier1 = LieferantClient.getOfferFromSuppliers(orderClient);
+            orderSupplier2 = LieferantClient.getOfferFromSuppliers(orderClient);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        OrderDTO chosenOrder = orderSupplier1.evaluateOffer(orderSupplier2);
+        order.setDeliveryDate(chosenOrder.getDeliveryDate());
+        order.setPrice(chosenOrder.getPrice());
+        order = orderRepository.save(order);
+        chosenOrder.setId(order.getId());
+        return chosenOrder;
+    }
 }

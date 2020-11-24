@@ -21,6 +21,9 @@ public class Griff {
     @OneToMany(mappedBy = "griff", cascade = CascadeType.ALL)
     private List<Dependency> dependencies;
 
+    @OneToMany(mappedBy = "griff", cascade = CascadeType.ALL)
+    private List<Order> orders;
+
     public Griff() {
 
     }

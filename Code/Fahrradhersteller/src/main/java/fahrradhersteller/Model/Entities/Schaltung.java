@@ -21,6 +21,9 @@ public class Schaltung {
     @OneToMany(mappedBy = "schaltung", cascade = CascadeType.ALL)
     private List<Dependency> dependencies;
 
+    @OneToMany(mappedBy = "schaltung", cascade = CascadeType.ALL)
+    private List<Order> orders;
+
     public Schaltung() {
     }
 

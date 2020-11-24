@@ -21,6 +21,9 @@ public class Material {
     @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
     private List<Dependency> dependencies;
 
+    @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
+    private List<Order> orders;
+
     public Material() {
     }
 

@@ -21,6 +21,9 @@ public class Lenkertyp {
     @OneToMany(mappedBy = "lenkertyp", cascade = CascadeType.ALL)
     private List<Dependency> dependencies;
 
+    @OneToMany(mappedBy = "lenkertyp", cascade = CascadeType.ALL)
+    private List<Order> orders;
+
     public Lenkertyp() {
 
     }
