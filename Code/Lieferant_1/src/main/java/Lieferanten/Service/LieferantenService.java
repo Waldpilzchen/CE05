@@ -12,7 +12,7 @@ public class LieferantenService {
 
     public static OrderDTO generateOffer (OrderDTO configuration) {
         configuration.setPrice(MIN_PREIS + (MAX_PREIS-MIN_PREIS) * RAND.nextDouble());
-        configuration.setDeliveryDate(Date.valueOf("2021-" + (RAND.nextInt(12) + 1) + "-" + (RAND.nextInt(28) + 1) ));
+        configuration.setDeliveryDate(Date.valueOf("2021-" + (RAND.nextInt(3) + 1) + "-" + (RAND.nextInt(28) + 1) ));
         return configuration;
     }
 
