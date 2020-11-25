@@ -38,7 +38,6 @@ public class ConfigurationController {
         this.orderRepository = orderRepository;
     }
 
-
     @GetMapping("/getAvailableHandlebarTypes")
     public List<String> getAvailableHandlebarTypes() {
         List<Lenkertyp> lenkertypen = new ArrayList<>();
@@ -121,8 +120,8 @@ public class ConfigurationController {
         OrderDTO orderSupplier1 = new OrderDTO();
         OrderDTO orderSupplier2 = new OrderDTO();
         try {
-            orderSupplier1 = LieferantClient.getOfferFromSuppliers(orderClient);
-            orderSupplier2 = LieferantClient.getOfferFromSuppliers(orderClient);
+            orderSupplier1 = LieferantClient.getOfferFromSupplierOne(orderClient);
+            orderSupplier2 = LieferantClient.getOfferFromSupplierTwo(orderClient);
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }

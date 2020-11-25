@@ -13,10 +13,23 @@ import java.time.Duration;
 
 public class LieferantClient {
 
-    public static OrderDTO getOfferFromSuppliers(OrderDTO order) throws IOException, InterruptedException {
+    public static OrderDTO getOfferFromSupplierOne(OrderDTO order) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest getHandleMaterials = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8081/getOrderOfferFromSupplierOne"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(new ObjectMapper().writeValueAsString(order)))
+                .build();
+
+        return new ObjectMapper().readValue(client.send(getHandleMaterials,
+                HttpResponse.BodyHandlers.ofString()).body(), OrderDTO.class);
+    }
+
+    public static OrderDTO getOfferFromSupplierTwo(OrderDTO order) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest getHandleMaterials = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8082/getOrderOfferFromSupplierTwo"))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(new ObjectMapper().writeValueAsString(order)))
@@ -31,7 +44,7 @@ public class LieferantClient {
     public static void main(String[] args) {
         try {
             OrderDTO myOrder = new OrderDTO();
-            myOrder = getOfferFromSuppliers(myOrder);
+            myOrder = getOfferFromSupplierOne(myOrder);
             System.out.println(myOrder.getDeliveryDate() + " " + myOrder.getPrice());
         } catch (IOException e) {
             e.printStackTrace();
