@@ -1,18 +1,19 @@
-package Lieferanten.Model.Entities;
+package Lieferanten.Shared;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class OrderDTO {
+public class OrderDTO implements Serializable {
 
     private long id;
 
-    private Lenkertyp lenkertyp;
+    private String lenkertyp;
 
-    private Material material;
+    private String material;
 
-    private Schaltung schaltung;
+    private String schaltung;
 
-    private Griff griff;
+    private String griff;
 
     private double price;
 
@@ -26,35 +27,35 @@ public class OrderDTO {
         this.id = id;
     }
 
-    public Lenkertyp getLenkertyp() {
+    public String getLenkertyp() {
         return lenkertyp;
     }
 
-    public void setLenkertyp(Lenkertyp lenkertyp) {
+    public void setLenkertyp(String lenkertyp) {
         this.lenkertyp = lenkertyp;
     }
 
-    public Material getMaterial() {
+    public String getMaterial() {
         return material;
     }
 
-    public void setMaterial(Material material) {
+    public void setMaterial(String material) {
         this.material = material;
     }
 
-    public Schaltung getSchaltung() {
+    public String getSchaltung() {
         return schaltung;
     }
 
-    public void setSchaltung(Schaltung schaltung) {
+    public void setSchaltung(String schaltung) {
         this.schaltung = schaltung;
     }
 
-    public Griff getGriff() {
+    public String getGriff() {
         return griff;
     }
 
-    public void setGriff(Griff griff) {
+    public void setGriff(String griff) {
         this.griff = griff;
     }
 

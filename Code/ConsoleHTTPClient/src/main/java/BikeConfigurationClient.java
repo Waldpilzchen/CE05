@@ -123,7 +123,7 @@ public class BikeConfigurationClient {
         if (values.size() != 4) throw new IllegalArgumentException("Incorrect list size, cannot send order");
         HttpRequest getHandleMaterials = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/getOrderConfirmation/" + values.get(0) + "/" + values.get(1) + "/" + values.get(2) + "/" + values.get(3)))
-                .timeout(Duration.ofSeconds(10))
+                .timeout(Duration.ofSeconds(100))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();

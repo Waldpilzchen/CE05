@@ -1,5 +1,6 @@
 package at.jku.ce05.fahrradhersteller.Controller;
 
+import at.jku.ce05.fahrradhersteller.Client.FIBUClient;
 import at.jku.ce05.fahrradhersteller.Client.LieferantClient;
 import at.jku.ce05.fahrradhersteller.Model.Entities.*;
 import at.jku.ce05.fahrradhersteller.Model.Entities.Enums.GriffEnum;
@@ -132,6 +133,15 @@ public class ConfigurationController {
         order.setPrice(chosenOrder.getPrice());
         order = orderRepository.save(order);
         chosenOrder.setId(order.getId());
+
+        FIBUClient fibuClient = new FIBUClient();
+        try {
+            fibuClient.startClient();
+            fibuClient.addConfigurationOrder(chosenOrder);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+
         return chosenOrder;
     }
 }

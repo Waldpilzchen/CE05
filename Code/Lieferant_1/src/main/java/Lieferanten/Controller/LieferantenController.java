@@ -1,7 +1,7 @@
 package Lieferanten.Controller;
 
-import Lieferanten.Model.Entities.OrderDTO;
 import Lieferanten.Service.LieferantenService;
+import Lieferanten.Shared.OrderDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
