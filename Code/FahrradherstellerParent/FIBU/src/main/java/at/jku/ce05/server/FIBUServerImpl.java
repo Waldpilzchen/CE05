@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 public class FIBUServerImpl implements FahrradConfigurationCommunication {
@@ -18,8 +19,15 @@ public class FIBUServerImpl implements FahrradConfigurationCommunication {
         if (configuration == null) throw new IllegalArgumentException("Configuration cannot be null");
 
         ArrayList<String> values = new ArrayList<String>();
-
-
+        values.add(String.valueOf(configuration.getId()));
+        values.add(configuration.getLenkertyp());
+        values.add(configuration.getMaterial());
+        values.add(configuration.getSchaltung());
+        values.add(configuration.getGriff());
+        values.add(String.valueOf(configuration.getPrice()));
+        values.add(configuration.getDeliveryDate().toString());
+        values.add(OffsetDateTime.now().toString());
+        writeToFile(values);
     }
 
     public FIBUServerImpl () throws RemoteException {
@@ -33,8 +41,13 @@ public class FIBUServerImpl implements FahrradConfigurationCommunication {
                 System.out.println("File created: " + myObj.getName());
                 ArrayList<String> headLine = new ArrayList<String>();
                 headLine.add("ID");
-                headLine.add("Date");
-                headLine.add("Cost");
+                headLine.add("Lenkertyp");
+                headLine.add("Material");
+                headLine.add("Schaltung");
+                headLine.add("Griff");
+                headLine.add("Preis");
+                headLine.add("Lieferdatum");
+                headLine.add("Bestelldatum");
                 writeToFile(headLine);
             } else {
                 System.out.println("File already exists.");
