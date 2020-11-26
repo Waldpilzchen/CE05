@@ -58,15 +58,19 @@ public class FIBUServerImpl implements FahrradConfigurationCommunication {
     }
 
     private void writeToFile(ArrayList<String> values) {
-        try (FileWriter myWriter = new FileWriter("fibu.csv");
+        try (FileWriter myWriter = new FileWriter("fibu.csv", true);
              BufferedWriter bw = new BufferedWriter(myWriter);
              PrintWriter pw = new PrintWriter(bw)){
+            StringBuilder textToWrite = new StringBuilder();
 
             for (String value: values) {
                 pw.print(value + SEPARATOR);
             }
             pw.println();
+
             System.out.println("Successfully wrote to the file.");
+        } catch (FileNotFoundException e) {
+            System.out.println("Cannot open file; File already in use");
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
