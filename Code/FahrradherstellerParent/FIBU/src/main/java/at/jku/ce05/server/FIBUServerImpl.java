@@ -3,9 +3,7 @@ package at.jku.ce05.server;
 import at.jku.ce05.shared.FahrradConfigurationCommunication;
 import at.jku.ce05.shared.OrderDTO;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.OffsetDateTime;
@@ -32,6 +30,7 @@ public class FIBUServerImpl implements FahrradConfigurationCommunication {
 
     public FIBUServerImpl () throws RemoteException {
         UnicastRemoteObject.exportObject(this, 0);
+        this.initializeFile();
     }
 
     private void initializeFile() {
@@ -59,12 +58,14 @@ public class FIBUServerImpl implements FahrradConfigurationCommunication {
     }
 
     private void writeToFile(ArrayList<String> values) {
-        try {
-            FileWriter myWriter = new FileWriter("fibu.csv");
+        try (FileWriter myWriter = new FileWriter("fibu.csv");
+             BufferedWriter bw = new BufferedWriter(myWriter);
+             PrintWriter pw = new PrintWriter(bw)){
+
             for (String value: values) {
-                myWriter.write(value + SEPARATOR);
+                pw.print(value + SEPARATOR);
             }
-            myWriter.close();
+            pw.println();
             System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
