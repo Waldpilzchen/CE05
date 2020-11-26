@@ -1,6 +1,7 @@
 package Lieferanten.Service;
 
-import Lieferanten.Model.Entities.OrderDTO;
+
+import Lieferanten.Shared.OrderDTO;
 
 import java.sql.Date;
 import java.util.Random;

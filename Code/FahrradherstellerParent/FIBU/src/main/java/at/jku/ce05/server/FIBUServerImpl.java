@@ -32,6 +32,7 @@ public class FIBUServerImpl implements FahrradConfigurationCommunication {
 
     public FIBUServerImpl () throws RemoteException {
         UnicastRemoteObject.exportObject(this, 0);
+        this.initializeFile();
     }
 
     private void initializeFile() {
