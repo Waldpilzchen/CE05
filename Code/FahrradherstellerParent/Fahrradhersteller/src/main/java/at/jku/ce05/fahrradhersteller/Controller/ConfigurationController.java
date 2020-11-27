@@ -9,13 +9,16 @@ import at.jku.ce05.fahrradhersteller.Model.Entities.Enums.MaterialEnum;
 import at.jku.ce05.fahrradhersteller.Model.Entities.Enums.SchaltungEnum;
 import at.jku.ce05.fahrradhersteller.Model.Repositories.*;
 import at.jku.ce05.fahrradhersteller.Model.Service;
+import at.jku.ce05.shared.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import at.jku.ce05.shared.OrderDTO;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,10 +108,10 @@ public class ConfigurationController {
     }
 
     @PostMapping("/getOrderConfirmation/{lenkertyp}/{material}/{schaltung}/{griff}")
-    public OrderDTO handleOrder(@PathVariable("lenkertyp") String lenkertypChoice,
-                                @PathVariable("material") String materialChoice,
-                                @PathVariable("schaltung") String schaltungChoice,
-                                @PathVariable("griff") String griffChoice) {
+    public ResponseEntity<Object> handleOrder(@PathVariable("lenkertyp") String lenkertypChoice,
+                                              @PathVariable("material") String materialChoice,
+                                              @PathVariable("schaltung") String schaltungChoice,
+                                              @PathVariable("griff") String griffChoice) {
         Order order = new Order();
         Lenkertyp l = lenkertypRepository.findLenkertypByLenkertypEnum(LenkertypEnum.valueOf(lenkertypChoice.toUpperCase()));
         Material m = materialRepository.findMaterialByMaterialEnum(MaterialEnum.valueOf(materialChoice.toUpperCase()));
@@ -124,9 +127,16 @@ public class ConfigurationController {
         OrderDTO orderSupplier2 = new OrderDTO();
         try {
             orderSupplier1 = LieferantClient.getOfferFromSupplierOne(orderClient);
+            Thread.sleep(10);
             orderSupplier2 = LieferantClient.getOfferFromSupplierTwo(orderClient);
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
+        }
+        catch (ConnectException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not reach Suppliers");
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occured");
         }
         OrderDTO chosenOrder = orderSupplier1.evaluateOffer(orderSupplier2);
         order.setDeliveryDate(chosenOrder.getDeliveryDate());
@@ -134,14 +144,22 @@ public class ConfigurationController {
         order = orderRepository.save(order);
         chosenOrder.setId(order.getId());
 
-        FIBUClient fibuClient = new FIBUClient();
+        System.out.println("I came here");
+
         try {
+            FIBUClient fibuClient = new FIBUClient();
             fibuClient.startClient();
             fibuClient.addConfigurationOrder(chosenOrder);
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
+        }
+        catch (java.rmi.ConnectException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not connect a partner system, please try again later");
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("An error occured");
         }
 
-        return chosenOrder;
+        return ResponseEntity.ok(chosenOrder);
     }
 }

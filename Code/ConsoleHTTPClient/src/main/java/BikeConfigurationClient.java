@@ -3,6 +3,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,47 +17,63 @@ public class BikeConfigurationClient {
     }
 
     private static void consoleCommunication() throws IOException, InterruptedException {
-        Scanner scanner = new Scanner(System.in);
-        String read = "";
+        try {
+            Scanner scanner = new Scanner(System.in);
+            String read = "";
 
-        HttpClient client = HttpClient.newHttpClient();
+            HttpClient client = HttpClient.newHttpClient();
 
-        boolean cancelConfig = false;
+            boolean cancelConfig = false;
 
-        ArrayList<String> configuration = new ArrayList<>();
-        ArrayList<String> configOptions = new ArrayList<>();
-        int i=0;
+            ArrayList<String> configuration = new ArrayList<>();
+            ArrayList<String> configOptions = new ArrayList<>();
+            int i=0;
 
-        while (i<4 && !cancelConfig) {
+            while (i<4 && !cancelConfig) {
 
-            String configOption = getConfigOptions(client,i, configuration);
-            configOptions = (ArrayList<String>) new ObjectMapper().readValue(configOption, List.class);
-            printOptions(configOptions);
-
-            String line = scanner.nextLine();
-            try {
-                int userInput = evaluateUserInput(line, configOptions.size());
-                if (userInput == -1) {
+                HttpResponse<String> response = getConfigOptions(client,i, configuration);
+                if (response.statusCode() != 200) {
+                    System.out.println(response.body());
+                    System.out.println("Terminating system now");
                     cancelConfig = true;
                 }
                 else {
-                    configuration.add(configOptions.get(userInput-1));
-                    i++;
+                    String configOption = response.body();
+                    configOptions = (ArrayList<String>) new ObjectMapper().readValue(configOption, List.class);
+                    printOptions(configOptions);
+
+                    String line = scanner.nextLine();
+                    try {
+                        int userInput = evaluateUserInput(line, configOptions.size());
+                        if (userInput == -1) {
+                            cancelConfig = true;
+                        }
+                        else {
+                            configuration.add(configOptions.get(userInput-1));
+                            i++;
+                        }
+                    }
+                    catch (IllegalArgumentException e) {
+                        System.out.println("Please enter a valid number!");
+                    }
+                    catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
             }
-            catch (IllegalArgumentException e) {
-                System.out.println("Please enter a valid number!");
-            }
-            catch (Exception e) {
-                System.out.println(e.getMessage());
+
+            if (!cancelConfig) {
+
+                String orderConfirmation = sendOrder(client, configuration);
+                System.out.println(orderConfirmation);
+                System.out.println("\n");
             }
         }
-
-        if (!cancelConfig) {
-
-            String orderConfirmation = sendOrder(client, configuration);
-            System.out.println(orderConfirmation);
-            System.out.println("\n");
+        catch (HttpTimeoutException e) {
+            System.out.println("The server did not responde withing 10 seconds. Connection closed.");
+        }
+        catch (Exception e) {
+            System.out.println("An exception occured: " + e.getLocalizedMessage());
         }
     }
 
@@ -67,7 +84,7 @@ public class BikeConfigurationClient {
         return number;
     }
 
-    public static String getConfigOptions (HttpClient client, int roundNumber, List<String> values) throws IOException, InterruptedException {
+    public static HttpResponse<String> getConfigOptions (HttpClient client, int roundNumber, List<String> values) throws IOException, InterruptedException {
         switch (roundNumber) {
             case 0: {
                 HttpRequest getHandleBarTypes = HttpRequest.newBuilder()
@@ -75,7 +92,7 @@ public class BikeConfigurationClient {
                         .build();
 
                 return client.send(getHandleBarTypes,
-                        HttpResponse.BodyHandlers.ofString()).body();
+                        HttpResponse.BodyHandlers.ofString());
             }
             case 1: {
                 if (values.size() != 1) throw new IllegalArgumentException("Incorrect values size");
@@ -87,7 +104,7 @@ public class BikeConfigurationClient {
                         .build();
 
                 return client.send(getMaterial,
-                        HttpResponse.BodyHandlers.ofString()).body();
+                        HttpResponse.BodyHandlers.ofString());
             }
             case 2: {
                 if (values.size() != 2) throw new IllegalArgumentException("Incorrect values size");
@@ -99,7 +116,7 @@ public class BikeConfigurationClient {
                         .build();
 
                 return client.send(getMaterial,
-                        HttpResponse.BodyHandlers.ofString()).body();
+                        HttpResponse.BodyHandlers.ofString());
             }
             case 3: {
                 if (values.size() != 3) throw new IllegalArgumentException("Incorrect values size");
@@ -111,7 +128,7 @@ public class BikeConfigurationClient {
                         .build();
 
                 return client.send(getHandleMaterials,
-                        HttpResponse.BodyHandlers.ofString()).body();
+                        HttpResponse.BodyHandlers.ofString());
             }
             default: {
                 throw new IllegalArgumentException("Cannot parse round number");
