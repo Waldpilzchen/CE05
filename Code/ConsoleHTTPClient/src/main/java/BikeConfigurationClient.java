@@ -64,9 +64,14 @@ public class BikeConfigurationClient {
 
             if (!cancelConfig) {
 
-                String orderConfirmation = sendOrder(client, configuration);
-                System.out.println(orderConfirmation);
-                System.out.println("\n");
+                HttpResponse<String> response = sendOrder(client, configuration);
+                if (response.statusCode() != 200) {
+                    System.out.println("An error occured: " + response.body());
+                }
+                else {
+                    OrderDTO orderDTO = new ObjectMapper().readValue(response.body(), OrderDTO.class);
+                    System.out.println(orderDTO.toString());
+                }
             }
         }
         catch (HttpTimeoutException e) {
@@ -136,7 +141,7 @@ public class BikeConfigurationClient {
         }
     }
 
-    public static String sendOrder (HttpClient client, ArrayList<String> values) throws IOException, InterruptedException {
+    public static HttpResponse<String> sendOrder (HttpClient client, ArrayList<String> values) throws IOException, InterruptedException {
         if (values.size() != 4) throw new IllegalArgumentException("Incorrect list size, cannot send order");
         HttpRequest getHandleMaterials = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/getOrderConfirmation/" + values.get(0) + "/" + values.get(1) + "/" + values.get(2) + "/" + values.get(3)))
@@ -146,7 +151,7 @@ public class BikeConfigurationClient {
                 .build();
 
         return client.send(getHandleMaterials,
-                HttpResponse.BodyHandlers.ofString()).body();
+                HttpResponse.BodyHandlers.ofString());
     }
 
     public static void printOptions (List<String> options) {
