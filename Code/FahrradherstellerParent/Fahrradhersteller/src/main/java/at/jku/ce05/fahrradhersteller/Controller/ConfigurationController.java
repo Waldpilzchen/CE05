@@ -144,8 +144,6 @@ public class ConfigurationController {
         order = orderRepository.save(order);
         chosenOrder.setId(order.getId());
 
-        System.out.println("I came here");
-
         try {
             FIBUClient fibuClient = new FIBUClient();
             fibuClient.startClient();

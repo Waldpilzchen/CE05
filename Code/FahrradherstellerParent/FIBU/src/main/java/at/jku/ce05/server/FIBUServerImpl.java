@@ -58,7 +58,7 @@ public class FIBUServerImpl implements FahrradConfigurationCommunication {
     }
 
     private void writeToFile(ArrayList<String> values) {
-        try (FileWriter myWriter = new FileWriter("fibu.csv");
+        try (FileWriter myWriter = new FileWriter("fibu.csv", true);
              BufferedWriter bw = new BufferedWriter(myWriter);
              PrintWriter pw = new PrintWriter(bw)){
 
