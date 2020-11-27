@@ -5,7 +5,7 @@
 	<packaging>pom</packaging>
 	<artifactId>FahrradherstellerParent</artifactId>
 	<groupId>at.jku.ce05</groupId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>FahrradherstellerParent</name>
 	<description>Fahrradhersteller Server</description>
 
@@ -22,9 +22,9 @@
 		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
 	<modules>
+		<module>Shared</module>
 		<module>Fahrradhersteller</module>
 		<module>FIBU</module>
-		<module>Shared</module>
 	</modules>
 
 	<build>
