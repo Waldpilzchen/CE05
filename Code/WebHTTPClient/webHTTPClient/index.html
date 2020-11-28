@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>webhttpclient</title>
+    <link rel="stylesheet" href="default.css">
+  </head>
+  <body>
+    
+    <div id="example">
+      <input type="button" v-on:click="getAvailableHandleBarTypes()" value="Test"/>
+      <input type="button" v-on:click="getAvailableHandlebarMaterials('FLATBARLENKER')" value="Test"/>
+      <input type="button" v-on:click="getAvailableHandlebarGearshifts('ALUMINIUM')" value="Test"/>
+      <input type="button" v-on:click="getAvailableHandleMaterials('KETTENSCHALTUNG')" value="Test"/>
+      <div v-if="handleBarTypes != null">
+        <div v-for="handleBar in handleBarTypes">
+          <div class="border margin" v-on:click="getAvailableHandlebarMaterials(handleBar)">
+            <div class="margin">
+              {{handleBar}}
+              <input type="button" v-on:click="getAvailableHandlebarMaterials(handleBar)" value="Click me"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="handleBarMaterials != null">
+        <div v-for="handleBarMaterial in handleBarMaterials">
+          <div class="border margin" v-on:click="getAvailableHandlebarMaterials(handleBarMaterial)">
+            <div class="margin">
+              {{handleBar}}
+              <input type="button" v-on:click="getAvailableHandlebarMaterials(handleBarMaterial)" value="Click me"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="handleBarGearshifts != null">
+        <div v-for="handleBarGearshift in handleBarGearshifts">
+          <div class="border margin" v-on:click="getAvailableHandlebarGearshifts(handleBarGearshift)">
+            <div class="margin">
+              {{handleBar}}
+              <input type="button" v-on:click="getAvailableHandlebarGearshifts(handleBarGearshift)" value="Click me"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="handleBarHandleMaterials != null">
+        <div v-for="handleBarHandleMaterial in handleBarHandleMaterials">
+          <div class="border margin" v-on:click="getAvailableHandlebarMaterials(handleBarHandleMaterial)">
+            <div class="margin">
+              {{handleBar}}
+              <input type="button" v-on:click="getAvailableHandlebarMaterials(handleBar)" value="Click me"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h1></h1>
+    <script src="/dist/build.js"></script>
+  </body>
+</html>
