@@ -5,24 +5,6 @@ import VueAxios from 'vue-axios'
 
 Vue.use(VueAxios, axios)
 
-new Vue({
-  el: '#app',
-  computed: {
-    // reversedMessage: function () {
-    //   var x
-    //   this.axios.get("localhost:8080/getAvailableHandlebarTypes").then((response) => {
-    //     console.log(response.data);
-    //     x = response.data;
-    //   })
-    //   return x;
-    // },
-    testText: function() {
-      return "Test123Hallo";
-    }
-  },
-  render: h => h(App)
-})
-
 var vm = new Vue({
   el: '#example',
   data: {
@@ -33,24 +15,17 @@ var vm = new Vue({
     handleBarHandleMaterials: [] = [],
     handleBarType: '',
     handleBarMaterial: '',
-    handleBarGearShift: ''
+    handleBarGearShift: '',
+    handleBarHandleMaterial: '',
+    orderConfirmation: [] = [],
+    orderReceived: false
   },
   beforeMount(){
     this.getAvailableHandleBarTypes();
   },
   methods: {
-    fillArray: function () {
-      this.retrievedBody = [
-        {id: '1'},
-        {id: '2'}
-      ];
-      this.testString = 'Test';
-    },
-    clearArray: function () {
-      this.retrievedBody = [];
-      this.testString = 'Test123';
-    },
     getAvailableHandleBarTypes: function () {
+      this.orderReceived = false;
       this.axios.get("http://localhost:8080/getAvailableHandlebarTypes", { crossdomain: true, headers: { 'Content-Type': null} }).then((response) => {
         console.log(response.data);
         this.handleBarTypes = response.data;
@@ -90,6 +65,22 @@ var vm = new Vue({
       this.axios.post(url, {}).then( (response) => {
         console.log(response.data);
         this.handleBarHandleMaterials = response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    sendConfiguration: function (handleBarHandleMaterialParam) {
+      this.handleBarTypes = [];
+      this.handleBarMaterials = [];
+      this.handleBarGearshifts = [];
+      this.handleBarHandleMaterials = [];
+      this.handleBarHandleMaterial = handleBarHandleMaterialParam;
+      var url = "http://localhost:8080/getOrderConfirmation/" + this.handleBarType + "/" + this.handleBarMaterial + "/" + this.handleBarGearShift + "/" + this.handleBarHandleMaterial
+      this.axios.post(url, {}).then( (response) => {
+        console.log(response.data);
+        this.orderConfirmation = response.data;
+        this.orderReceived = true;
       })
       .catch(function (error) {
         console.log(error);
