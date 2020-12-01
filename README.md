@@ -2,6 +2,7 @@
 
 ## Step 1: Setting up your environment
 
+Get the application here: [Git](https://github.com/Waldpilzchen/CE05.git)
 For this application to work on your PC/Laptop etc. you need to have a few things installed first.
 
 - Java
