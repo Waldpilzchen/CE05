@@ -1,4 +1,4 @@
-# CE-Projekt (UE05-07)
+# CE-Projekt (UE05-06)
 
 ## Step 1: Setting up your environment
 
@@ -34,7 +34,7 @@ It's also in your best interest to install a Java-IDE (eg. Visual Studio Code, E
 
 For the Web/Console Client to work, a few things need to be started beforehand.Â 
 
-1. Open the folder "FahrradherstellerParent" in the IDE of you choice.
+1. Open the folder "Code/FahrradherstellerParent" in the IDE of you choice.
 
 2. Wait a moment until the IDE built the project with maven.
 
@@ -42,7 +42,7 @@ For the Web/Console Client to work, a few things need to be started beforehand.Â
 
 4. Run /FIBU/scr/main/java/at/jku/ce05/server/FIBUConfigurationRunServer.java using the IDE
 
-5. Open the folders "Lieferant1" and "Lieferant2 " in the IDE of you choice.
+5. Open the folders "Code/Lieferant1" and "Code/Lieferant2 " in the IDE of you choice.
 
 6. Wait a moment until the IDE built the project with maven.
 
@@ -58,7 +58,7 @@ If you finished "Step 2" you can start the Console or the Web Client.
 
 ### Console Client
 
-1. Open the Folder "ConsoleHttpClient" in the IDE of your choice.
+1. Open the Folder "Code/ConsoleHttpClient" in the IDE of your choice.
 
 2. Let the application be built by the IDE.
 
@@ -68,9 +68,9 @@ If you finished "Step 2" you can start the Console or the Web Client.
 
 ### Web Client
 
-1. If you installed Visual Studio Code open the folder "/WebHTTPClient/webHTTPClient" with it.
+1. If you installed Visual Studio Code open the folder "Code/WebHTTPClient/webHTTPClient" with it.
 
-2. If open you Terminal/CMD/bash/... and navigate to this folder.
+2. If not open your Terminal/CMD/bash/... and navigate to this folder.
 
 3. Type in `npm install`
 
